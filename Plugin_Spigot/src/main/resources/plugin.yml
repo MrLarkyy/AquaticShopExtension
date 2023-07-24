@@ -1,0 +1,6 @@
+name: Plugin_Spigot
+version: '${project.version}'
+main: xyz.larkyy.aquaticshopextension.plugin_spigot.Plugin_Spigot
+api-version: '1.16'
+commands:
+  aquaticse:

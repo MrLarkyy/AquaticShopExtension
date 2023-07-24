@@ -1,0 +1,4 @@
+# Project exclude paths
+/NMS_1_19_4/target/
+/nms_api/target/
+/Plugin_Spigot/target/

@@ -131,7 +131,12 @@ public class NMS_1_19_4 implements NMSHandler {
     public void setContainerItem(Player player, ItemStack is, int slot) {
         var serverPlayer = ((CraftPlayer)player).getHandle();
         var container = serverPlayer.containerMenu;
-        var containerId = container.containerId;
+        int containerId;
+        if (slot < 0) {
+            containerId = -1;
+        } else {
+            containerId = container.containerId;
+        }
 
         var packet = new ClientboundContainerSetSlotPacket(containerId,container.getStateId(),slot, CraftItemStack.asNMSCopy(is));
         sendPacket(player,packet);

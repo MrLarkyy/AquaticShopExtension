@@ -45,7 +45,6 @@ public class Listeners implements Listener {
         }
 
         if (plugin.getSearchHandler().isSearch(e.getWhoClicked().getUniqueId(),e.getWhoClicked().getOpenInventory().getTopInventory())) {
-            Bukkit.broadcastMessage("Is search!");
             e.setCancelled(true);
             if (!(e.getClick() == ClickType.LEFT || e.getClick() == ClickType.RIGHT)) {
                 return;

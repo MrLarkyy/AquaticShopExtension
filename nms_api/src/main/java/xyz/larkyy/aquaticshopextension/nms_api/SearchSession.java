@@ -54,4 +54,8 @@ public class SearchSession {
     public Map<Integer, Consumer<InventoryClickEvent>> getClickActions() {
         return clickActions;
     }
+
+    public boolean hasNextPage() {
+        return (21*(page+1) < foundItems.size());
+    }
 }

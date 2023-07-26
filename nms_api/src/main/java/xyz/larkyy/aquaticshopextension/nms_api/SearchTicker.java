@@ -38,10 +38,7 @@ public class SearchTicker extends BukkitRunnable {
             }
             if (im.hasDisplayName()) {
                 String text = im.getDisplayName();
-                if (!text.equals(session.getInput())) {
-                    session.setInput(text);
-                    plugin.getSearchHandler().updateSearch(p,text);
-                }
+                plugin.getSearchHandler().updateSearch(p,text);
             }
         }
     }

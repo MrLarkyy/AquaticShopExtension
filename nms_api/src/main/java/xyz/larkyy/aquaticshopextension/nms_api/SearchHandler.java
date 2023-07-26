@@ -1,6 +1,7 @@
 package xyz.larkyy.aquaticshopextension.nms_api;
 
 import net.brcdev.shopgui.ShopGuiPlugin;
+import net.brcdev.shopgui.ShopGuiPlusApi;
 import net.brcdev.shopgui.config.Lang;
 import net.brcdev.shopgui.config.Settings;
 import net.brcdev.shopgui.event.ShopPostTransactionEvent;
@@ -49,14 +50,21 @@ public class SearchHandler {
         im.setDisplayName("§f");
         is.setItemMeta(im);
 
+        StringBuilder title = new StringBuilder();
+        title.append("§f");
+        title.append("\uF000".repeat(158));
+        title.append("\uF042");
+        title.append("\uF054");
+
         var anvil = new AnvilGUI.Builder()
                 .plugin(plugin)
-                .title("Search Inventory")
+                .title(title.toString())
                 .onClick((slot,state)-> Collections.emptyList())
                 .itemLeft(is)
                 .open(player);
 
         searchUIs.put(player.getUniqueId(),new SearchSession(anvil));
+        updateSearch(player,"");
     }
 
     public void removeSearch(UUID uuid) {
@@ -82,7 +90,12 @@ public class SearchHandler {
     }
 
     public void updateSearch(Player player, String input) {
+
         var session = searchUIs.get(player.getUniqueId());
+        if (session.getInput() != null && session.getInput().equalsIgnoreCase(input)) {
+            return;
+        }
+        session.setInput(input);
         List<ShopItem> found = new ArrayList<>();
         String[] strs = input.split(" ");
         for (Shop shop : ShopGuiPlugin.getInstance().getShopManager().shops) {
@@ -112,6 +125,7 @@ public class SearchHandler {
 
     public void updateSearchPage(Player player) {
         var session = searchUIs.get(player.getUniqueId());
+        plugin.getNMSHandler().setContainerItem(player,new ItemStack(Material.AIR),-1);
         session.getClickActions().clear();
         List<Integer> slots = Arrays.asList(
                 10,11,12,13,14,15,16,
@@ -180,8 +194,26 @@ public class SearchHandler {
                 });
             }
 
+
             plugin.getNMSHandler().setContainerItem(player,is,slot-6);
             //player.getInventory().setItem(slot,is);
+        }
+
+        {
+            ItemStack is = new ItemStack(Material.MAP);
+            ItemMeta im = is.getItemMeta();
+            im.setCustomModelData(1010);
+            im.setDisplayName("§bReturn");
+            is.setItemMeta(im);
+
+            for (int i = 0; i <5;i++ ) {
+                int slot = 38+i;
+                plugin.getNMSHandler().setContainerItem(player,is,slot-6);
+                session.getClickActions().put(2+i,e-> {
+                    removeSearch(player.getUniqueId());
+                    ShopGuiPlusApi.openShop(player,ShopExtensionPlugin.categories.get(0).getCategoryId(),1);
+                });
+            }
         }
 
         {
@@ -194,6 +226,14 @@ public class SearchHandler {
         }
 
         {
+            ItemStack is = new ItemStack(Material.AIR);
+            plugin.getNMSHandler().setContainerItem(player,is,36-6);
+            plugin.getNMSHandler().setContainerItem(player,is,37-6);
+            plugin.getNMSHandler().setContainerItem(player,is,43-6);
+            plugin.getNMSHandler().setContainerItem(player,is,44-6);
+        }
+
+        {
             ItemStack is = new ItemStack(Material.MAP);
             ItemMeta im = is.getItemMeta();
             im.setCustomModelData(1010);
@@ -201,15 +241,24 @@ public class SearchHandler {
             is.setItemMeta(im);
             plugin.getNMSHandler().setContainerItem(player,is,9-6);
             session.getClickActions().put(9,(e)-> {
-                Bukkit.broadcastMessage("Click prev page");
+                if (session.getPage() > 0) {
+                    session.setPage(session.getPage()-1);
+                }
+                updateSearchPage(player);
             });
             plugin.getNMSHandler().setContainerItem(player,is,18-6);
             session.getClickActions().put(18,(e)-> {
-                Bukkit.broadcastMessage("Click prev page");
+                if (session.getPage() > 0) {
+                    session.setPage(session.getPage()-1);
+                }
+                updateSearchPage(player);
             });
             plugin.getNMSHandler().setContainerItem(player,is,27-6);
             session.getClickActions().put(27, (e)-> {
-                Bukkit.broadcastMessage("Click prev page");
+                if (session.getPage() > 0) {
+                    session.setPage(session.getPage()-1);
+                }
+                updateSearchPage(player);
             });
         }
         {
@@ -220,15 +269,24 @@ public class SearchHandler {
             is.setItemMeta(im);
             plugin.getNMSHandler().setContainerItem(player,is,17-6);
             session.getClickActions().put(17,(e)-> {
-                Bukkit.broadcastMessage("Click next page");
+                if (session.hasNextPage()) {
+                    session.setPage(session.getPage()+1);
+                }
+                updateSearchPage(player);
             });
             plugin.getNMSHandler().setContainerItem(player,is,26-6);
             session.getClickActions().put(26,(e)-> {
-                Bukkit.broadcastMessage("Click next page");
+                if (session.hasNextPage()) {
+                    session.setPage(session.getPage()+1);
+                }
+                updateSearchPage(player);
             });
             plugin.getNMSHandler().setContainerItem(player,is,35-6);
             session.getClickActions().put(35,(e)-> {
-                Bukkit.broadcastMessage("Click next page");
+                if (session.hasNextPage()) {
+                    session.setPage(session.getPage()+1);
+                }
+                updateSearchPage(player);
             });
         }
 

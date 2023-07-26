@@ -1,0 +1,20 @@
+settings:
+  selected-category-lore:
+    - " "
+    - "&7Selected"
+
+categories:
+  blocks:
+    item:
+      material: GRASS_BLOCK
+      display_name: "&bCategory &8| &fBlocks"
+      lore:
+        - " "
+        - "&fClick!"
+  ores:
+    item:
+      material: IRON_ORE
+      display_name: "&bCategory &8| &fOres"
+      lore:
+        - " "
+        - "&fClick!"

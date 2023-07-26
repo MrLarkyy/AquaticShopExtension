@@ -1,8 +1,15 @@
 package xyz.larkyy.aquaticshopextension.plugin_spigot;
 
+import net.brcdev.shopgui.ShopGuiPlugin;
 import net.brcdev.shopgui.ShopGuiPlusApi;
+import net.brcdev.shopgui.config.Settings;
+import net.brcdev.shopgui.exception.player.PlayerDataNotLoadedException;
+import net.brcdev.shopgui.gui.gui.OpenGui;
+import net.brcdev.shopgui.gui.gui.ShopGui;
+import net.brcdev.shopgui.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -44,6 +51,9 @@ public class Command implements CommandExecutor {
             String baseTitle = title.toString();
 
             ShopSession session = plugin.getShopSessionHandler().getOrCreateSession(target);
+
+            applyPreviousMenuData(target,session);
+
             AnimationUI animationUI  = new AnimationUI(baseTitle,target,session,2101);
 
             ItemStack is = new ItemStack(Material.MAP);
@@ -64,8 +74,38 @@ public class Command implements CommandExecutor {
                 plugin.getShopSessionHandler().getSessions().put(target.getUniqueId(),session);
                 ShopGuiPlusApi.openShop(target,category,1);
             },6);
+
+
+        } else if (strs[0].equalsIgnoreCase("search")) {
+           if (strs.length < 2) return false;
+            Player target = Bukkit.getPlayer(strs[1]);
+            if (target == null) return false;
+            plugin.getSearchHandler().openSearch(target);
         }
         return true;
+    }
+
+    private void applyPreviousMenuData(Player player, ShopSession session) {
+        PlayerData playerData;
+        if (!ShopGuiPlugin.getInstance().getPlayerManager().isPlayerLoaded(player))
+            return;
+        try {
+            playerData = ShopGuiPlugin.getInstance().getPlayerManager().getPlayerData((OfflinePlayer)player);
+        } catch (Exception ignored) {
+            return;
+        }
+        if (!playerData.hasOpenGui())
+            return;
+        OpenGui openGui = playerData.getOpenGui();
+
+        if (openGui.getType() == OpenGui.MenuType.SHOP) {
+            ShopGui shopGui = (ShopGui) openGui;
+            int currentPage = shopGui.getCurrentPage();
+            String id = shopGui.getShop().getId();
+
+            session.setPreviousCategory(id);
+            session.setPreviousPage(currentPage);
+        }
     }
 
     private void runTaskLater(Consumer<BukkitRunnable> consumer, int delay) {

@@ -15,11 +15,13 @@ public final class Plugin_Spigot extends ShopExtensionPlugin {
 
     private NMSHandler nmsHandler;
     private ShopSessionHandler shopSessionHandler;
+    private SearchHandler searchHandler;
 
     @Override
     public void onEnable() {
         shopSessionHandler = new ShopSessionHandler();
         nmsHandler = new NMS_1_19_4(this);
+        searchHandler = new SearchHandler(this);
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             nmsHandler.injectPlayer(onlinePlayer);
@@ -45,5 +47,10 @@ public final class Plugin_Spigot extends ShopExtensionPlugin {
     @Override
     public ShopSessionHandler getShopSessionHandler() {
         return shopSessionHandler;
+    }
+
+    @Override
+    public SearchHandler getSearchHandler() {
+        return searchHandler;
     }
 }

@@ -1,4 +1,4 @@
-name: Plugin_Spigot
+name: AquaticShopExtension
 version: '${project.version}'
 main: xyz.larkyy.aquaticshopextension.plugin_spigot.Plugin_Spigot
 api-version: '1.16'

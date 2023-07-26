@@ -32,6 +32,8 @@ public abstract class ShopExtensionPlugin extends JavaPlugin {
 
     public abstract ShopSessionHandler getShopSessionHandler();
 
+    public abstract SearchHandler getSearchHandler();
+
     public void updateInventory(Player player, Inventory inventory, ShopSession session) {
         int lowBound = session.getCategoryLowbound();
 

@@ -10,6 +10,8 @@ public class ShopSession {
     private int categoryLowbound;
     private Inventory inventory;
     private int selectedIndex = 0;
+    private String previousCategory = null;
+    private int previousPage = 1;
 
     public ShopSession(String selectedCategory, Player player) {
         this.page = 0;
@@ -56,5 +58,21 @@ public class ShopSession {
 
     public void setSelectedIndex(int selectedIndex) {
         this.selectedIndex = selectedIndex;
+    }
+
+    public int getPreviousPage() {
+        return previousPage;
+    }
+
+    public String getPreviousCategory() {
+        return previousCategory;
+    }
+
+    public void setPreviousCategory(String previousCategory) {
+        this.previousCategory = previousCategory;
+    }
+
+    public void setPreviousPage(int previousPage) {
+        this.previousPage = previousPage;
     }
 }

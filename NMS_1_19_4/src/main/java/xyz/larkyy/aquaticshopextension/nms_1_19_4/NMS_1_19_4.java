@@ -9,11 +9,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import xyz.larkyy.aquaticshopextension.nms_api.NMSHandler;
 import xyz.larkyy.aquaticshopextension.nms_api.ShopExtensionPlugin;
 
@@ -122,5 +125,15 @@ public class NMS_1_19_4 implements NMSHandler {
     }
     private int getPacketId(Packet<?> packet) {
         return ConnectionProtocol.PLAY.getPacketId(PacketFlow.CLIENTBOUND, packet);
+    }
+
+    @Override
+    public void setContainerItem(Player player, ItemStack is, int slot) {
+        var serverPlayer = ((CraftPlayer)player).getHandle();
+        var container = serverPlayer.containerMenu;
+        var containerId = container.containerId;
+
+        var packet = new ClientboundContainerSetSlotPacket(containerId,container.getStateId(),slot, CraftItemStack.asNMSCopy(is));
+        sendPacket(player,packet);
     }
 }

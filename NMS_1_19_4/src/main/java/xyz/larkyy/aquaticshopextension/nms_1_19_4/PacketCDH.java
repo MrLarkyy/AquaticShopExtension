@@ -10,6 +10,7 @@ import net.brcdev.shopgui.inventory.ShopInventoryHolder;
 import net.brcdev.shopgui.player.PlayerData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -71,8 +72,9 @@ public class PacketCDH extends ChannelDuplexHandler {
                     title.append("\uF041");
                     if (ShopExtensionPlugin.subCategories.contains(category)) {
                         title.append("\uF000".repeat(214)).append("\uF053");
-
                         category = session.getSelectedCategory();
+                    } else {
+                        session.setPreviousCategory(null);
                     }
 
                     session.setSelectedCategory(category);
@@ -83,7 +85,13 @@ public class PacketCDH extends ChannelDuplexHandler {
             } catch (Exception ignored) {
                 PacketCDH.super.write(ctx,packetObj,promise);
             }
-        } else {
+        } else if(pkt instanceof ClientboundContainerSetContentPacket packet) {
+            if (!plugin.getSearchHandler().isSearch(player.getUniqueId(),player.getOpenInventory().getTopInventory())) {
+                super.write(ctx,packetObj,promise);
+                return;
+            }
+            return;
+        }else {
             super.write(ctx,packetObj,promise);
         }
 

@@ -25,6 +25,7 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -92,6 +93,11 @@ public class SearchHandler {
     public void updateSearch(Player player, String input) {
 
         var session = searchUIs.get(player.getUniqueId());
+
+        AnvilInventory inv = (AnvilInventory) session.getAnvilGUI().getInventory();
+        inv.setRepairCost(-1);
+        inv.setMaximumRepairCost(0);
+
         if (session.getInput() != null && session.getInput().equalsIgnoreCase(input)) {
             return;
         }
@@ -125,6 +131,7 @@ public class SearchHandler {
 
     public void updateSearchPage(Player player) {
         var session = searchUIs.get(player.getUniqueId());
+
         plugin.getNMSHandler().setContainerItem(player,new ItemStack(Material.AIR),-1);
         session.getClickActions().clear();
         List<Integer> slots = Arrays.asList(

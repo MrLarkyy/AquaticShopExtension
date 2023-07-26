@@ -11,6 +11,7 @@ import net.brcdev.shopgui.player.PlayerData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
+import net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -49,6 +50,7 @@ public class PacketCDH extends ChannelDuplexHandler {
                 if (invHolder instanceof BInventoryHolder holder) {
 
                     if (!(invHolder instanceof ShopInventoryHolder)) {
+                        PacketCDH.super.write(ctx,packetObj,promise);
                         return;
                     }
 
@@ -91,7 +93,7 @@ public class PacketCDH extends ChannelDuplexHandler {
                 return;
             }
             return;
-        }else {
+        } else {
             super.write(ctx,packetObj,promise);
         }
 
